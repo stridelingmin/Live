@@ -90,7 +90,6 @@ public class OCRRectView extends View {
         mViewHeight = canvas.getHeight();
         Log.i("tt","ww" + mViewWidth);
 
-
         mTopRect = new Rect(0, 0, mViewWidth, mViewHeight / 6);
         mBottomRect = new Rect(0, 5*(mViewHeight/6), mViewWidth, mViewHeight);
         mLeftRect = new Rect(0, (mViewHeight/6), mViewWidth/6, 5*(mViewHeight/6));
