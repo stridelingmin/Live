@@ -18,24 +18,22 @@
         android:orientation="horizontal"
         >
         <Button
-            android:id="@+id/btn"
+            android:id="@+id/gl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="打开摄像头"
-            android:onClick="start"
+            android:text="openGl"
             />
         <Button
-            android:id="@+id/choose"
+            android:id="@+id/surface"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="录制"
-            android:onClick="btn_switch"
+            android:text="surface"
             />
         <Button
+            android:id="@+id/tex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="关闭"
-            android:onClick="stop"
+            android:text="textureSurface"
             />
 
     </LinearLayout>

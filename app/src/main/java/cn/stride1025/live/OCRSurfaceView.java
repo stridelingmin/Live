@@ -127,7 +127,7 @@ public class OCRSurfaceView extends android.view.SurfaceView implements  Surface
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.i("tt","surfaceCreated" );
-        new Thread(this).start();
+//        new Thread(this).start();
     }
 
     @Override

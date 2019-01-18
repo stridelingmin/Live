@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,7 +35,7 @@ import java.util.List;
 import cn.stride1025.live.utils.ImageUtil;
 import rx.Observer;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
     private static final SparseIntArray orientations = new SparseIntArray();//手机旋转对应的调整角度
 
@@ -52,8 +53,10 @@ public class CameraActivity extends AppCompatActivity {
     private TextureView mTextureView;
     private int mSurface_h;
     private int mSurface_w;
-    private Button capPhoto;
+    private Button capPhoto,record;
     private String photoPath = null;
+    private byte[] mBuffer;
+    private boolean recording = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,7 +71,13 @@ public class CameraActivity extends AppCompatActivity {
         mOpenCamera = (Button) findViewById(R.id.openCamera);
         mCheckPhoto = (Button) findViewById(R.id.checkPhoto);
         capPhoto = (Button) findViewById(R.id.capPhoto);
-
+        record = (Button) findViewById(R.id.record);
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recording = true;
+            }
+        });
         requestPermission();
 
         mOpenCamera.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +105,6 @@ public class CameraActivity extends AppCompatActivity {
                     mCamera = null;
                 }
                 checkPhoto();
-
             }
         });
         mTextureView.post(new Runnable() {
@@ -106,7 +114,7 @@ public class CameraActivity extends AppCompatActivity {
                 mSurface_w = mTextureView.getHeight();
             }
         });
-
+        mTextureView.setSurfaceTextureListener(this);
     }
 
     private void checkPhoto() {
@@ -149,6 +157,8 @@ public class CameraActivity extends AppCompatActivity {
 
     //打开预览
     private void openCamera() {
+
+
         int numberOfCameras = Camera.getNumberOfCameras();//获取手机上有效摄像头个数
         Log.i(TAG, "CameraNum - > " + numberOfCameras);
 
@@ -221,9 +231,20 @@ public class CameraActivity extends AppCompatActivity {
 
 
         Log.i(TAG, "setPreviewSize - > previewSize_w " + previewSize.width + " ->previewSize_h " + previewSize.height);
+        List<int[]> supportedPreviewFpsRange = parameters.getSupportedPreviewFpsRange();//支持的刷新频率
 
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//        min 14000 ->max 25000
+//         min 25000 ->max 25000
+//         min 2000 ->max 30000
+//         min 30000 ->max 30000
+        for (int[] size :
+                supportedPreviewFpsRange) {
+            Log.i(TAG, "supportedPreviewFpsRange - > min " +size[0] + " ->max "+size[1]);
+        }
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         parameters.setPictureFormat(ImageFormat.JPEG);
+        parameters.setPreviewFormat(ImageFormat.NV21);
+        parameters.setPreviewFpsRange(30000,30000);
         try {
             mCamera.setPreviewTexture(mTextureView.getSurfaceTexture());
 
@@ -234,8 +255,25 @@ public class CameraActivity extends AppCompatActivity {
         Log.i(TAG, "cameraDisplayOrientation " + cameraDisplayOrientation);
         parameters.setRotation(cameraDisplayOrientation);//用来旋转照片角度
         mCamera.setParameters(parameters);
+
+        mBuffer = new byte[previewSize.height * previewSize.width *4];
+        mCamera.addCallbackBuffer(mBuffer);
+        mCamera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
+            @Override
+            public void onPreviewFrame(byte[] data, Camera camera) {
+                Log.i(TAG, "cameraDisplayOrientation ");
+                if (null != camera) {
+                    mCamera.addCallbackBuffer(mBuffer);
+                }
+
+
+            }
+        });
+
         mCamera.setDisplayOrientation(cameraDisplayOrientation);
         mCamera.startPreview();
+
+
     }
 
 
@@ -356,5 +394,25 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
         return optimalSize;
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        //
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
     }
 }

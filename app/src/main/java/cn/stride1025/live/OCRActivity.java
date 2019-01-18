@@ -11,6 +11,8 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import java.io.IOException;
@@ -32,6 +34,9 @@ public class OCRActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.orc_activity);
 
@@ -41,10 +46,16 @@ public class OCRActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                openCamera();
+                openCamera();
             }
         });
-
+        mSurfaceView.post(new Runnable() {
+            @Override
+            public void run() {
+                mSurface_h = mSurfaceView.getWidth();
+                mSurface_w = mSurfaceView.getHeight();
+            }
+        });
     }
     //打开预览
     private void openCamera() {
@@ -105,14 +116,14 @@ public class OCRActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ViewGroup.LayoutParams layoutParams = mSurfaceView.getLayoutParams();
-                layoutParams.width = previewSize.height;//相机支持的宽高和布局相反
-                layoutParams.height = previewSize.width;
+                layoutParams.width =480;//相机支持的宽高和布局相反
+                layoutParams.height = 640;
                 mSurfaceView.setLayoutParams(layoutParams);
                 mSurfaceView.invalidate();
             }
         });
-        parameters.setPreviewSize(previewSize.width, previewSize.height);
-        parameters.setPictureSize(previewSize.width, previewSize.height);
+        parameters.setPreviewSize(640, 480);
+        parameters.setPictureSize(640, 480);
         Camera.Size pictureSize = parameters.getPictureSize();
         Log.i(TAG, "mTextureView_w - >  " + mSurfaceView.getWidth() + " ->mTextureView_h " + mSurfaceView.getHeight());
 
@@ -133,6 +144,8 @@ public class OCRActivity extends AppCompatActivity {
         parameters.setRotation(cameraDisplayOrientation);//用来旋转照片角度
         mCamera.setParameters(parameters);
         mCamera.setDisplayOrientation(cameraDisplayOrientation);
+        mCamera.addCallbackBuffer(new byte[640*480*3/2]);
+        mCamera.setPreviewCallbackWithBuffer(new MyPreviewCallBackWithBuffer());
         mCamera.startPreview();
     }
     //获取正确的预览角度
