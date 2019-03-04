@@ -22,23 +22,24 @@ android {
         }
         debug {
             minifyEnabled false
-            resValue("string","live","debugd")
 
             applicationIdSuffix ".debug"
             Properties properties = new Properties()
-            properties.load(project.rootProject.file("http.properties").newDataInputStream())    //需要加后缀
+            properties.load(project.rootProject.file("http.properties").newDataInputStream())
+            //需要加后缀
             String environment = properties.getProperty("env", "dev")
-            if ("dev" == environment) {
-             String baseUrl= properties.getProperty("baseurl.dev")
-                buildConfigField("String","baseurl",baseUrl)
-            }else if("test" == environment){
-                String baseUrl= properties.getProperty("baseurl.test")
-                buildConfigField("String","baseurl",baseUrl)
+            if ("dev" .equals(environment) ) {
+                String baseUrl = properties.getProperty("baseurl.dev")
+                buildConfigField("String", "baseurl", baseUrl)
+            } else if ("test".equals(environment) ) {
+                String baseUrl = properties.getProperty("baseurl.test")
+                buildConfigField("String", "baseurl", baseUrl)
             }
         }
         dev {
             minifyEnabled false
             applicationIdSuffix ".dev"
+
         }
     }
     externalNativeBuild {
