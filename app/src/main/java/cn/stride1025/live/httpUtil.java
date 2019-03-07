@@ -6,6 +6,5 @@ public class httpUtil {
 
     String st = "自动化";
 
-String sss="dfadsfasdf";
 
 }
