@@ -13,7 +13,7 @@ public interface ICamera {
 
     /**
      * 使用SurfaceTexture 来作为预览的画面
-     *
+     *dsdfsdfsd
      * @param surfaceTexture
      */
     void setPreviewTexture(SurfaceTexture surfaceTexture);

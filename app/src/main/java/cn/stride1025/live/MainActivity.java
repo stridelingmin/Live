@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 registerConnected();
-                Toast.makeText(MainActivity.this, " isnet " + isNetworkAvailable(MainActivity.this), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, " isnets " + isNetworkAvailable(MainActivity.this), Toast.LENGTH_SHORT).show();
             }
         });
 
