@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         fbo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,FBOActivity.class));
+                startActivity(new Intent(MainActivity.this, FBOActivity.class));
             }
         });
 
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onCompleted() {
-
+                        Toast.makeText(MainActivity.this, "zidong", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
