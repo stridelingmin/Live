@@ -10,4 +10,7 @@ public class httpUtil {
     int num = 66;
 String sss="dfadsfasdf";
 
+
+String ww = ";";
+
 }
