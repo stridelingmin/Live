@@ -8,6 +8,6 @@ public class httpUtil {
     String sy = "auto";
 
     int num = 66;
-
+String sss="dfadsfasdf";
 
 }
